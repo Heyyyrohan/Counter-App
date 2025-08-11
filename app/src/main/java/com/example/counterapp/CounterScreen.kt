@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,13 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.counterapp.CounterViewModel
 
 
-@Preview(showSystemUi=true, showBackground = true)
+
 @Composable
-fun Counter() {
+fun CounterScreen(vm : CounterViewModel = viewModel()) {
 
-    var num by remember { mutableStateOf(0)}
+    val count = vm.count.collectAsState().value
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -35,22 +40,23 @@ fun Counter() {
 
     ){
         Text(
-            text = "$num",
+            text = "$count",
             fontSize = 95.sp
         )
 
         Spacer(modifier = Modifier.height(30.dp))
 
         Text(
-            text = "The Button Clicked $num Times",
+            text = "The Button Clicked $count Times",
             fontSize = 25.sp
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth().
-            padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -59,7 +65,7 @@ fun Counter() {
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(10.dp),
                 onClick ={
-                    num++
+                    vm.increace()
                     // num= num+1
                 }
             ) {
@@ -74,11 +80,12 @@ fun Counter() {
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(10.dp),
                 onClick ={
-                    num = 0
+                    vm.reset()
                 }
             ) {
                 Text(text = "Reset",
                     fontSize = 20.sp)
+
 
             }
 
@@ -88,3 +95,10 @@ fun Counter() {
     }
 
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewCounterScreen() {
+    CounterScreen()
+}
+
